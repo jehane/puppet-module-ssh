@@ -67,6 +67,20 @@ class ssh (
   $sshd_config_match                      = undef,
   $sshd_authorized_keys_command           = undef,
   $sshd_authorized_keys_command_user      = undef,
+  $sshd_authorized_keys_ldap              = false,
+  $sshd_authorized_keys_ldap_packages     = undef,
+  $sshd_authorized_keys_ldap_uri          = undef,
+  $sshd_authorized_keys_ldap_user         = undef,
+  $sshd_authorized_keys_ldap_password     = undef,
+  $sshd_authorized_keys_ldap_base         = undef,
+  $sshd_authorized_keys_ldap_security     = undef,
+  $sshd_authorized_keys_config_owner      = 'root',
+  $sshd_authorized_keys_config_group      = 'root',
+  $sshd_authorized_keys_config_mode       = '0644',
+  $sshd_authorized_keys_config_path       = '/etc/ssh/ldap.conf',
+  $sshd_authorized_keys_script_owner      = 'root',
+  $sshd_authorized_keys_script_group      = 'root',
+  $sshd_authorized_keys_script_mode       = '0755',
   $sshd_banner_content                    = undef,
   $sshd_banner_owner                      = 'root',
   $sshd_banner_group                      = 'root',
@@ -929,6 +943,35 @@ class ssh (
       require => Package[$packages_real],
     }
   }
+
+  if $sshd_authorized_keys_ldap == true {
+    package { $sshd_authorized_keys_ldap_packages :
+      ensure  => installed,
+    }
+    
+    file { 'ldap.conf' :
+      ensure  => file,
+      path    => $sshd_authorized_keys_config_path,
+      owner   => $sshd_authorized_keys_config_owner,
+      group   => $sshd_authorized_keys_config_group,
+      mode    => $sshd_authorized_keys_config_mode,
+      content => template($sshd_ldap_config),
+      require => Package[$sshd_authorized_keys_ldap_packages],
+    }
+    
+    # only RHEL and derivatives got a openssh-ldap wrapper available as rpm
+    if $::osfamily != RedHat {
+      file { 'ldap_keys.sh' :
+        ensure  => file,
+        path    => $sshd_authorized_keys_command,
+        owner   => $sshd_authorized_keys_script_owner,
+        group   => $sshd_authorized_keys_script_group,
+        mode    => $sshd_authorized_keys_script_mode,
+        source  => 'puppet:///puppet/ssh/ldap_keys.sh'
+      }
+    }
+  }
+
 
   if $manage_root_ssh_config_real == true {
 
