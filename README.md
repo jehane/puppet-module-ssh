@@ -415,6 +415,48 @@ String of user for AuthorizedKeysCommandUser in sshd_config.
 
 - *Default*: undef
 
+sshd_authorized_keys_ldap
+-------------------------
+Enabling using ldap-stored ssh keys (with sshd_authorized_keys_command)
+
+- *Default*: 'false'
+
+sshd_authorized_keys_ldap_packages
+----------------------------------
+Packages to install to user ldap-stored ssh-keys (for RedHat Release, openssh-ldap is recommanded)
+
+- *Default*: undef
+
+sshd_authorized_keys_ldap_uri
+-----------------------------
+LDAP URI used to get ldap-stored ssh-keys
+
+- *Default*: undef
+
+sshd_authorized_keys_ldap_user
+------------------------------
+LDAP user (dn) used to get ldap-stored ssh-keys
+
+- *Default*: undef
+
+sshd_authorized_keys_ldap_password
+----------------------------------
+LDAP user password used to get ldap-stored ssh-keys
+
+- *Default*: undef
+
+sshd_authorized_keys_ldap_base
+------------------------------
+LDAP search base used to get ldap-stored ssh-keys
+
+- *Default*: undef
+
+sshd_authorized_keys_ldap_security
+----------------------------------
+LDAP security algorithms 
+
+- *Default*: undef
+
 sshd_x11_forwarding
 -------------------
 X11Forwarding in sshd_config. Specifies whether X11 forwarding is permitted.
